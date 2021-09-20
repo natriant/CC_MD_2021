@@ -26,13 +26,13 @@ plt.rcParams.update(params)
 
 
 
-path2files = './example_WS_data_19Aug2021/'
+path2files = '/home/natalia/PhD_projects/CC_MD_2021/abwlm_data/14Sep2021/SPS.USER.LHCMD4/'
 
 files_list = sorted(os.listdir(path2files)[:-1])
 print(files_list)
 
 # files to be ignored from the plotting and the fit
-files2ignore_list = ['2021.08.19.13.49.24.135000_SPS.BWS.41677.V-PM1.parquet']
+files2ignore_list =  []
 
 entry = 0
 subentries = np.arange(0,80) # how many bunches
@@ -47,14 +47,20 @@ emit_list, days_list  = [], []
 
 for filename in files_list:
     if filename not in files2ignore_list:
-        data = ds.parquet_to_awkward(path2files+filename) # type: awkward.highlevel.Array
-        pd_data = ak.to_pandas(data) # convert awkward arrays to pandas for easier manipilation
+        #data = ds.parquet_to_awkward(path2files+filename) # type: awkward.highlevel.Array
+        data = ds.parquet_to_dict(path2files+filename)
+        #print(data)
+        #quit()
+        pd_data = pd.DataFrame.from_dict(data)
+        #pd_data = ak.to_pandas(data) # convert awkward arrays to pandas for easier manipilation
+        print(pd_data)
+        quit()
 
         acq = pd_data['cycleStamp'][0][bunch][0]/1e9+ pd_data[f'acq_time_{my_set}'][0][bunch][0]/1e6 # sec
         t_corr = 2*3600
         days_list.append(md.epoch2num(acq+t_corr))  # Convert UNIX time to days since Matplotlib epoch.
 
-        emit_list.append(pd_data[f'emittance_{my_set}'][0][bunch][0])
+        emit_list.append(pd_data[f'bunchLengthMean'][0][bunch][0])
     else:
         print(f'file {filename} ignored')
 

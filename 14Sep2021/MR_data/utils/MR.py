@@ -9,11 +9,11 @@ import gzip
 import time
 import glob
 import pickle
-from zip_mat import save_zip
-import timestamp_helpers as th
+from utils.zip_mat import save_zip
+import utils.timestamp_helpers as th
 
 
-class MountainRange(object):
+class MountainRange(object): # The files in ./mr need to end with .mat.gz or .mat
     def __init__(self, complete_path):
         #print(f'start of mountain range class {complete_path}')
         if complete_path.endswith('.mat.gz'):
@@ -76,7 +76,7 @@ def sdds_to_dict_new(in_complete_path): # 4/10/2021 (Natalia)
         print('Failed to open data file. (save_mr_mat)')
         return
     
-    timeStamps =s dds_data.values['triggerStamp']
+    timeStamps = sdds_data.values['triggerStamp']
     time_string_filename = str(datetime.fromtimestamp(timeStamps[-1]*1e-9))[:19]
     t_stamp_unix = time.mktime(time.strptime(time_string_filename, '%Y-%m-%d %H:%M:%S'))
 
@@ -102,7 +102,7 @@ def sdds_to_dict_new(in_complete_path): # 4/10/2021 (Natalia)
 
 
 
-def sdds_to_file(in_complete_path, mat_filename_prefix='SPSmeas_', outp_folder='mr/'):
+def sdds_to_file(in_complete_path, mat_filename_prefix='SPSmeas_', outp_folder='./mr/'):
 
     dict_meas = sdds_to_dict_new(in_complete_path)
     us_string = dict_meas['SPSuser']
@@ -121,7 +121,7 @@ def sdds_to_file(in_complete_path, mat_filename_prefix='SPSmeas_', outp_folder='
 
 
 
-def make_pickle(pickle_name='mr_overview.pkl', mat_folder='./mr'):
+def make_pickle(pickle_name='mr_overview.pkl', mat_folder='./mr/'):
     if os.path.isfile(pickle_name):
         with open(pickle_name) as fid:
             beams = pickle.load(fid)
@@ -129,10 +129,10 @@ def make_pickle(pickle_name='mr_overview.pkl', mat_folder='./mr'):
            
     else:
         beams = {}
-        #print(f'\n Creating file {pickle_name}')
-
-    SPSuser_list = os.listdir(mat_folder)[:-1]
+        print(f'\n Creating file {pickle_name}')
     
+    SPSuser_list = os.listdir(mat_folder)
+    print(SPSuser_list)
     for SPSuser in SPSuser_list:
 
         if not(SPSuser in beams.keys()):

@@ -26,8 +26,7 @@ plt.rc('font', family='serif')
 plt.rcParams.update(params)
 
 
-
-path2files = './example_WS_data_19Aug2021/'
+path2files = './ws_data/'
 
 files_list = sorted(os.listdir(path2files)[:-1])
 print(files_list)
@@ -36,14 +35,14 @@ print(files_list)
 files2ignore_list = ['2021.08.19.13.49.24.135000_SPS.BWS.41677.V-PM1.parquet']
 
 entry = 0
-subentries = np.arange(0,80) # how many bunches
-subsubentry=0
+subentries = np.arange(0, 80)  # how many bunches
+subsubentry = 0
 
 # select bunch
 bunch = subentries[0]
 
-emit_list_1, days_list_1  = [], []
-emit_list_2, days_list_2  = [], []
+emit_list_1, days_list_1 = [], []
+emit_list_2, days_list_2 = [], []
 
 for filename in files_list:
 	if filename not in files2ignore_list:
@@ -67,11 +66,11 @@ for filename in files_list:
 
 ## compute average between Set 1 and Set 2
 emit_list_mean = [statistics.mean(k) for k in zip(emit_list_1, emit_list_2)]
-emit_list_std =  [statistics.stdev(k) for k in zip(emit_list_1, emit_list_2)]
+emit_list_std = [statistics.stdev(k) for k in zip(emit_list_1, emit_list_2)]
 
 days_list_mean = [statistics.mean(k) for k in zip(days_list_1, days_list_2)]
 
-# compute the emit grwoth in m/day
+# compute the emit growth in m/day
 
 # Set 1
 [m_1, b_1], cov = np.polyfit(days_list_1, emit_list_1, deg=1, cov=True)

@@ -141,7 +141,7 @@ def make_pickle(pickle_name='mr_overview.pkl', mat_folder='./mr/'):
             beams[SPSuser]['mu0'] = np.array([])
             beams[SPSuser]['ampl'] = np.array([])
             beams[SPSuser]['timestamp_float'] = np.array([])
-
+            
         list_mr_files = os.listdir(mat_folder +'/'+ SPSuser) # exclude .ipynb.checkpoints file
         files2ignore = ['.ipynb_checkpoints']
         N_cycles = len(list_mr_files)
@@ -160,14 +160,16 @@ def make_pickle(pickle_name='mr_overview.pkl', mat_folder='./mr/'):
                     curr_mr = MountainRange(mat_folder +'/'+ SPSuser +'/'+ filename_mr)
                     SPSuser = curr_mr.SPSuser[0]
                     sigmat, ampl, mu0 = curr_mr.fit_sigma_t_first_bunch()
+                    #avg_profile = curr_mr.get_average_profile()
+             
                     beams[SPSuser]['ampl'] = np.append(beams[SPSuser]['ampl'], ampl)
                     beams[SPSuser]['mu0'] = np.append(beams[SPSuser]['mu0'], mu0)
                     beams[SPSuser]['sigma_t'] = np.append(beams[SPSuser]['sigma_t'], sigmat)
                     beams[SPSuser]['timestamp_float'] = np.append(beams[SPSuser]['timestamp_float'], curr_mr.t_stamp_unix)
-
+                    
                 except IOError as err:
                     print(err)
-
+       
         #print(beams)
         ind_sorted = np.argsort(beams[SPSuser]['timestamp_float'])
         for kk in beams[SPSuser].keys():

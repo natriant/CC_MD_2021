@@ -1,0 +1,6 @@
+The measurements for the emittance growth took place between 22h20 and 23h00.
+This folder contains the measurements that are taken during this period.
+
+From Hannes:
+The feature of the “Best channel” from the wirescanner firmware does not work correctly yet.
+We will always use PM1 (in fact we will set the wirescanners such that PM1 will be the best).

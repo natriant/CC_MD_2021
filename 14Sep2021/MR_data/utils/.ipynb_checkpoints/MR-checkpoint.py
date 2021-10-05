@@ -59,10 +59,10 @@ class MountainRange(object): # The files in ./mr need to end with .mat.gz or .ma
         sigma0 = 1.
         ampl = np.max(average_profile[mask_average_profile])
         mu0 = self.time_axis[np.argmax(average_profile)]
-        p0 = [ampl, mu0, sigma0]
+        p0 = [ampl, mu0, sigma0] # initial guess of independent vriables
         p1, success = op.leastsq(self._errfunc, p0[:], args=(self.time_axis[mask_average_profile], 
                 average_profile[mask_average_profile]))
-        if success:
+        if success: # type(success): bool. True if one of the convergence criteria is satisfied (status > 0).
             sigma_t = p1[2]
         else:
             sigma_t = 0.

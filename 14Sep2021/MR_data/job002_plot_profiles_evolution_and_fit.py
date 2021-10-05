@@ -80,7 +80,6 @@ for i, my_file in enumerate(files_list[120:287]):
     ax.grid(ls='--')
     
     
-    
     plt.tight_layout()
     plt.savefig(f'./figures/profiles/profiles_GaussFit_{my_title}.png', bbox_inches='tight')
     plt.close()

@@ -41,10 +41,12 @@ class MountainRange(object): # The files in ./mr need to end with .mat.gz or .ma
         self.time_axis = np.float_(range(self.value.shape[1]))*self.sample_interval-self.value.shape[1]*self.sample_interval/2.
 
     def get_average_profile(self):
-        average_profile = np.mean(self.value[-20:,:],axis=0)
-        baseline = np.mean(average_profile[0:20])
+        #average_profile = np.mean(self.value[-20:,:],axis=0) # comment from Natalia (5.10.2021): usually the MR measurements are taken at injection. So in the beginning of the cycle the profiles are not good (flactuated). Thus only the last 20 values were used for the analysis. Now we are in coast so this cut is not needed.
+        average_profile = np.mean(self.value, axis=0) # update from Natalia (5.10.2021)
+        baseline = np.mean(average_profile[0:20]) # consider as baseline the first 20 values as the profiles from MR are assymetric (comment from Natalia 5.10.2021)
         average_profile -= baseline
         return average_profile
+    
 
     def fit_sigma_t_first_bunch(self):
         average_profile = self.get_average_profile()
@@ -177,3 +179,4 @@ def make_pickle(pickle_name='mr_overview.pkl', mat_folder='./mr/'):
        
         with open(pickle_name, 'wb') as fid:
             pickle.dump(beams, fid)
+

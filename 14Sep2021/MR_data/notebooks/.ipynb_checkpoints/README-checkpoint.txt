@@ -1,1 +1,0 @@
-To run the scripts in this folder you need to copy them in the parent direcotry.

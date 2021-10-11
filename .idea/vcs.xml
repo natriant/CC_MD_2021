@@ -3,5 +3,6 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/datascout" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/preparation/headtail_monitor_preparation/headtail" vcs="Git" />
   </component>
 </project>

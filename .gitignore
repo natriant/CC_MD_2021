@@ -1,3 +1,2 @@
-./datascout
-./headtail_monitor_preparation/headtail
-./headtail_monitor_preparation/h5_files/*.h5
+./datascout/*
+./preparation/headtail_monitor_preparation/headtail

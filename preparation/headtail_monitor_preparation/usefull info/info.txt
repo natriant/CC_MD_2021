@@ -1,0 +1,13 @@
+- Post processing library for HEADTAIL: https://gitlab.cern.ch/bi/headtail
+    - Turorial: https://indico.cern.ch/event/931117/contributions/3913554/attachments/2096199/3523367/014_HeadtailMonitor.pdf 
+    - wiki page: https://wikis.cern.ch/display/BEBI/BQHT
+- Explanation on the Headtail monitor and when CC synchronised with the main RF: (slide 15-16: https://www.isis.stfc.ac.uk/Gallery/09%20-%20Graeme%20Burt_IOPPABG2019.pdf)
+
+- Explanation on the headtail monitor analysis when the CC is not synchronised with the main RF (CC MD 2018) (slide 16):
+https://indico.cern.ch/event/800428/attachments/1804664/2945632/CrabCavity_BE_Seminar.pdf 
+
+"The Head-Tail Monitor gives two data sets. 
+1. A **sigma (or sum)** signal which is the
+longitudinal line density for a given window (often 10,000 turns). 
+2. A **delta (or difference)** signal which is a
+measure of the transverse offset within the bunch."

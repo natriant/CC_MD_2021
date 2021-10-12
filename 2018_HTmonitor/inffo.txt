@@ -1,0 +1,3 @@
+HT monitor data from 2018:
+/eos/project/h/hllhcwp4/SPS_MDs_2018/HeadtailMonitor
+

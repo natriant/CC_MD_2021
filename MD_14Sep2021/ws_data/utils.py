@@ -24,11 +24,15 @@ def fitGauss(pos, prof, pos_min=-np.inf, pos_max=np.inf, fit_func='Gauss4p'):
             p0 = [A0, mu0, sigma0, offset0, skew0]
         try:
             popt, pcov = curve_fit(fitfunction, pos, prof, p0=p0)
+            if fit_func == 'Gauss4p': # added by Natalia, 14.10.2021
+                errors = np.sqrt(np.array([pcov[0,0], pcov[1,1], pcov[2,2], pcov[3,3]])) 
+            if fit_func == 'Gauss5p': # added from Natalia, 14.10.2021
+                errors = np.sqrt(np.array([pcov[0,0], pcov[1,1], pcov[2,2], pcov[3,3], pcov[4,4]])) # Get the standard deviation of the parameters, square roors of the diagonal of the covariance
             if len(popt) == 4:
                 popt = np.append(popt, [skew0])
         except (RuntimeError, ValueError):
             pass
-    return popt
+    return popt, errors # return errors, added by Natalia, 14.10.2021
 
 # From: https://gitlab.cern.ch/scripting-tools/injectors-beam-monitoring/-/blob/master/injectors_beam_monitoring/utils/analytical_functions.py
 def Gauss3p(x, A, mu, sigma):

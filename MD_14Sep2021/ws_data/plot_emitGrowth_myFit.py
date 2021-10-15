@@ -92,6 +92,8 @@ for my_set in range(1,3):
         pop_t_y = fitGauss(y_dict[f'positions_Set{my_set}'][i], y_dict[f'profiles_Set{my_set}'][i])
         ey = getEmittance(pop_t_y[2], beta['SPS.BWS.41677.V'], y_dict[f'betagamma_Set{my_set}'][i]) # returns the emittance in [um]
         y_dict[f'emittance_Set{my_set}_myFit'].append(ey[0]*1e-6)
+
+
     for i in range(len(x_dict[f'positions_Set{my_set}'])): # iterate over the acquisitions for each setting, x-plane
         pop_t_x = fitGauss(x_dict[f'positions_Set{my_set}'][i], x_dict[f'profiles_Set{my_set}'][i])
         ex = getEmittance(pop_t_x[2], beta['SPS.BWS.51637.H'], x_dict[f'betagamma_Set{my_set}'][i])

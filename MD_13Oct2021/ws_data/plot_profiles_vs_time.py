@@ -28,11 +28,11 @@ plt.ion()
 
 plt.close('all')
 
-path2files = './SPS.USER.LHCMD4-MD_CRAB_26_200_L3034_Q26_2021_V1/emit_growth/'
+path2files = './SPS.USER.LHCMD4-MD_CRAB_26_200_L3034_Q26_2021_V1/coast3_setting3/'
 files_list = sorted(glob.glob(path2files+'*PM1*')) # we will always use "PM1" (in fact we will set the wirescanners such that PM1 will be the best).
 # The feature of the “Best channel” from the wirescanner firmware does not work correctly yet (23Sep2021)
 
-files2ignore_list = []
+files2ignore_list = [f'{path2files}2021.10.13.12.15.24.135000_SPS.BWS.41677.V-PM1.parquet', f'{path2files}2021.10.13.12.15.24.135000_SPS.BWS.51637.H-PM1.parquet']
 
 x_dict, y_dict = {}, {}
 
@@ -83,7 +83,7 @@ for my_set in range(1,3):
     plt.grid(ls='--')
     plt.tight_layout()
 
-    #plt.savefig(f'profilesY_vs_time_Set{my_set}.png', bbox_inches='tight')
+    plt.savefig(f'profilesY_vs_time_Set{my_set}.png', bbox_inches='tight')
 
 for my_set in range(1,3):
     fig, ax = plt.subplots()  
@@ -105,3 +105,4 @@ for my_set in range(1,3):
     plt.tight_layout()
 
     plt.savefig(f'profilesX_vs_time_Set{my_set}.png', bbox_inches='tight')
+

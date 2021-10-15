@@ -1,0 +1,2 @@
+LOD = -15
+Noise for 10 um/h

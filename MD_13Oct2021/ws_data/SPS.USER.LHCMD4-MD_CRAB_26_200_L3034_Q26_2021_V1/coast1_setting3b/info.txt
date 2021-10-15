@@ -1,0 +1,2 @@
+Check if the measuerments at this time are any good:
+2021.10.13.15.16.28.935000_SPS.BWS.41677.V-PM2.parquet

@@ -27,11 +27,11 @@ plt.ion()
 
 plt.close('all')
 
-path2files = './SPS.USER.LHCMD4-MD_CRAB_26_200_L3034_Q26_2021_V1/emit_growth/'
+path2files = './SPS.USER.LHCMD4-MD_CRAB_26_200_L3034_Q26_2021_V1/coast3_setting3/'
 files_list = sorted(glob.glob(path2files+'*PM1*')) # we will always use "PM1" (in fact we will set the wirescanners such that PM1 will be the best).
 # The feature of the “Best channel” from the wirescanner firmware does not work correctly yet (23Sep2021)
 
-files2ignore_list = []
+files2ignore_list = [f'{path2files}2021.10.13.12.15.24.135000_SPS.BWS.41677.V-PM1.parquet', f'{path2files}2021.10.13.12.15.24.135000_SPS.BWS.51637.H-PM1.parquet']
 
 x_dict, y_dict = {}, {}
 
@@ -43,6 +43,7 @@ for my_set in range(1,3):
     x_dict[f'days_set{my_set}'], y_dict[f'days_set{my_set}'] = [], []
     for filename in files_list:
         if filename not in files2ignore_list:
+            print(filename)
             # Load data 
             data = ds.parquet_to_awkward(filename) # type: awkward.highlevel.Array
             #print(data.fields) # print the keys of the awkward array
@@ -57,7 +58,9 @@ for my_set in range(1,3):
                 y_dict[f'days_set{my_set}'].append(md.epoch2num(acq+t_corr))  # Convert UNIX time to days since Matplotlib epoch.
         else:
             print(f'file {filename} ignored')
-            
+
+
+
 # compute the emit grwoth in m/day, only for set 1 and only for set 2
 for my_set in range(1,3):
     [mX, bX], covX = np.polyfit(x_dict[f'days_set{my_set}'], x_dict[f'emit_set{my_set}'], deg=1, cov=True)
@@ -83,12 +86,12 @@ for my_set in range(1,3):
     ax.plot(x_dict[f'days_set{my_set}'], (np.array(x_dict[f'days_set{my_set}'])*mX+bX)*1e6, c='b', label=r'$\mathrm{d\epsilon_x/dt}$'+f'= {mX*1e6/24:.2f}'+r'$\pm$'+f'{errX*1e6/24:.2f} '+r'$\mathrm{[\mu m/h]}$')
     ax.plot(y_dict[f'days_set{my_set}'], (np.array(y_dict[f'days_set{my_set}'])*mY+bY)*1e6, c='r', label=r'$\mathrm{d\epsilon_y/dt}$'+f'= {mY*1e6/24:.2f}'+r'$\pm$'+f'{errY*1e6/24:.2f} '+r'$\mathrm{[\mu m/h]}$')
 
-    plt.ylim(1.00, 2.6)
+    plt.ylim(2.5, 10.0)
     
     ax.set_title(f'Set {my_set}')
     ax.set_xlabel('Time')
     ax.set_ylabel(r'$\mathrm{\epsilon \ [\mu m]}$')
-    ax.legend(loc=4)
+    ax.legend(loc=2, frameon=False)
     plt.setp(ax.get_xticklabels(), rotation=45)
     plt.gca().xaxis.set_major_formatter(xfmt)
     plt.grid(ls='--')
@@ -105,6 +108,9 @@ emitY_list_mean = [statistics.mean(k) for k in zip(y_dict[f'emit_set1'], y_dict[
 emitY_list_std =  [statistics.stdev(k) for k in zip(y_dict[f'emit_set1'], y_dict[f'emit_set2'])]
 daysY_list_mean = [statistics.mean(k) for k in zip(y_dict[f'days_set1'], y_dict[f'days_set2'])]
 
+
+#print(f' ex = {emitX_list_mean[0]}')
+#print(f'ey = {emitY_list_mean[0]}')
 
 
 ## Compute the emit grwoth in m/day, averaging Set 1 and Set 2
@@ -137,11 +143,11 @@ ax.plot(daysX_list_mean, (np.array(daysX_list_mean)*mX_mean+bX_mean)*1e6, c='b',
 ax.errorbar(daysY_list_mean, np.array(emitY_list_mean)*1e6, yerr=np.array(emitY_list_std)*1e6, marker='o', ls='',c='r', capsize=5, zorder=50, label=r'$\mathrm{\langle Set 1, Set 2 \rangle}$')
 ax.plot(daysY_list_mean, (np.array(daysY_list_mean)*mY_mean+bY_mean)*1e6, c='r', label=r'$\mathrm{d\epsilon_y/dt}$'+f'= {mY_mean*1e6/24:.2f}'+r'$\pm$'+f'{errY_mean*1e6/24:.2f} '+r'$\mathrm{[\mu m/h]}$')
 
-plt.ylim(1.00, 2.9)
+plt.ylim(2.5, 10.0)
 
 ax.set_xlabel('Time')
 ax.set_ylabel(r'$\mathrm{\epsilon \ [\mu m]}$')
-ax.legend(loc=4)
+ax.legend(loc=2, frameon=False)
 plt.setp(ax.get_xticklabels(), rotation=45)
 plt.gca().xaxis.set_major_formatter(xfmt)
 plt.grid(ls='--')
@@ -149,3 +155,4 @@ plt.tight_layout()
 
 
 plt.savefig(f'emit_vs_time_averageSet1andSet2_largerScale.png', bbox_inches='tight')
+

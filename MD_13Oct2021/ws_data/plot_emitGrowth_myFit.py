@@ -35,11 +35,11 @@ plt.ion()
 
 plt.close('all')
 
-path2files = './SPS.USER.LHCMD4-MD_CRAB_26_200_L3034_Q26_2021_V1/emit_growth/'
+path2files = './SPS.USER.LHCMD4-MD_CRAB_26_200_L3034_Q26_2021_V1/coast3_setting3/'
 files_list = sorted(glob.glob(path2files+'*PM1*')) # we will always use "PM1" (in fact we will set the wirescanners such that PM1 will be the best).
 # The feature of the “Best channel” from the wirescanner firmware does not work correctly yet (23Sep2021)
 
-files2ignore_list = []
+files2ignore_list = [f'{path2files}2021.10.13.12.15.24.135000_SPS.BWS.41677.V-PM1.parquet', f'{path2files}2021.10.13.12.15.24.135000_SPS.BWS.51637.H-PM1.parquet']
 
 x_dict, y_dict = {}, {}
 
@@ -87,17 +87,32 @@ for my_set in range(1,3):
     y_dict[f'emittance_Set{my_set}_myFit'] = []
     x_dict[f'emittance_Set{my_set}_myFit'] = []
     x_dict[f'emittance_Set{my_set}_myFit_with_Dx'] = []
-    
+
+    y_dict[f'emittance_Set{my_set}_myFit_err'] = []
+    x_dict[f'emittance_Set{my_set}_myFit_err'] = []
+
     for i in range(len(y_dict[f'positions_Set{my_set}'])): # iterate over the acquisitions for each setting, y-plane
-        pop_t_y = fitGauss(y_dict[f'positions_Set{my_set}'][i], y_dict[f'profiles_Set{my_set}'][i])
-        ey = getEmittance(pop_t_y[2], beta['SPS.BWS.41677.V'], y_dict[f'betagamma_Set{my_set}'][i]) # returns the emittance in [um]
+        pop_t_y, errors = fitGauss(y_dict[f'positions_Set{my_set}'][i], y_dict[f'profiles_Set{my_set}'][i], fit_func='Gauss5p')
+        A, mu, sigma, offset = pop_t_y[0], pop_t_y[1], pop_t_y[2], pop_t_y[3]
+        ey = getEmittance(sigma, beta['SPS.BWS.41677.V'], y_dict[f'betagamma_Set{my_set}'][i]) # returns the emittance in [um]
+        err= errors[-1]/sigma # from MD 2018. cernbox/CC_MDs_2018/27July2020/MD5_5Sep2018_beam_profiles_vs_emitBU_coast2.ipynb. Added by Natalia 14.10.2021
         y_dict[f'emittance_Set{my_set}_myFit'].append(ey[0]*1e-6)
+        y_dict[f'emittance_Set{my_set}_myFit_err'].append(err*1e-6)
+        #results = [A, mu, sigma, offset]
+        #y_dict[f'Set{my_set}_myFitresults'].append(results)
+
     for i in range(len(x_dict[f'positions_Set{my_set}'])): # iterate over the acquisitions for each setting, x-plane
-        pop_t_x = fitGauss(x_dict[f'positions_Set{my_set}'][i], x_dict[f'profiles_Set{my_set}'][i])
-        ex = getEmittance(pop_t_x[2], beta['SPS.BWS.51637.H'], x_dict[f'betagamma_Set{my_set}'][i])
+        pop_t_x, errors = fitGauss(x_dict[f'positions_Set{my_set}'][i], x_dict[f'profiles_Set{my_set}'][i], fit_func='Gauss5p')
+        A, mu, sigma, offset = pop_t_x[0], pop_t_x[1], pop_t_x[2], pop_t_x[3]
+        ex = getEmittance(sigma, beta['SPS.BWS.51637.H'], x_dict[f'betagamma_Set{my_set}'][i])
         ex_Dx = getEmittance_with_Dx(pop_t_x[2],  beta['SPS.BWS.51637.H'], x_dict['betagamma_Set1'][0], Dx['SPS.BWS.51637.H'], dpp) # returns the emittance in [um]
-        x_dict[f'emittance_Set{my_set}_myFit'].append(ex[0]*1e-6) 
+        err= errors[-1]/sigma
+        
+        x_dict[f'emittance_Set{my_set}_myFit'].append(ex[0]*1e-6)
         x_dict[f'emittance_Set{my_set}_myFit_with_Dx'].append(ex_Dx[0]*1e-6)
+        x_dict[f'emittance_Set{my_set}_myFit_err'].append(err*1e-6)
+        #results = [A, mu, sigma, offset]
+        #x_dict[f'Set{my_set}_myFitresults'].append(results)
 
 
 # compute the emit grwoth in m/day, only for set 1 and only for set 2 and plot new vs old
@@ -138,7 +153,7 @@ for my_set in range(1,3):
     ax.plot(y_dict[f'days_Set{my_set}'], (np.array(y_dict[f'days_Set{my_set}'])*mY_myFit+bY_myFit)*1e6, c='r', label=r'$\mathrm{d\epsilon_y/dt}$'+f'= {mY_myFit*1e6/24:.2f}'+r'$\pm$'+f'{errY_myFit*1e6/24:.2f} '+r'$\mathrm{[\mu m/h]}$')
     
     
-    plt.ylim(1.00, 2.9)
+    plt.ylim(1.0, 3.0)
     
     ax.set_title(f'Set {my_set}')
     ax.set_xlabel('Time')
@@ -149,7 +164,7 @@ for my_set in range(1,3):
     plt.grid(ls='--')
     plt.tight_layout()
 
-    plt.savefig(f'./figures/myFit_11Oct2021/emit_vs_time_Set{my_set}.png', bbox_inches='tight')
+    plt.savefig(f'emit_vs_time_Set{my_set}.png', bbox_inches='tight')
     plt.close()
 
 
@@ -200,7 +215,7 @@ ax.plot(daysX_list_mean, (np.array(daysX_list_mean)*mX_mean_Dx+bX_mean_Dx)*1e6, 
 ax.errorbar(daysY_list_mean, np.array(emitY_list_mean)*1e6, yerr=np.array(emitY_list_std)*1e6, marker='o', ls='',c='r', capsize=5, label=r'$\mathrm{\langle Set 1, Set 2 \rangle}$')
 ax.plot(daysY_list_mean, (np.array(daysY_list_mean)*mY_mean+bY_mean)*1e6, c='r', label=r'$\mathrm{d\epsilon_y/dt}$'+f'= {mY_mean*1e6/24:.2f}'+r'$\pm$'+f'{errY_mean*1e6/24:.2f} '+r'$\mathrm{[\mu m/h]}$')
 
-plt.ylim(1.00, 2.9)
+plt.ylim(1.0, 3.0)
 
 ax.set_xlabel('Time')
 ax.set_ylabel(r'$\mathrm{\epsilon \ [\mu m]}$')
@@ -211,7 +226,7 @@ plt.grid(ls='--')
 plt.tight_layout()
 
 
-plt.savefig(f'./figures/myFit_11Oct2021/emit_vs_time_averageSet1andSet2.png', bbox_inches='tight')
+plt.savefig(f'emit_vs_time_averageSet1andSet2.png', bbox_inches='tight')
 
 
 ### Print the initial emittance in both planes.

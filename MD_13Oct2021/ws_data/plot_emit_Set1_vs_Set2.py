@@ -70,9 +70,9 @@ ax.set_xlim(1,9)
 ax.set_ylim(1,9)
 plt.grid(ls='--')
 plt.tight_layout()
-
-plt.savefig(f'BWS.51637.H_IN_vs_OUT_fixed.png', bbox_inches='tight')
-
+plt.show()
+#plt.savefig(f'BWS.51637.H_IN_vs_OUT_fixed.png', bbox_inches='tight')
+plt.savefig('test.png')
 
 # '41677.V'
 fig, ax = plt.subplots()
@@ -84,5 +84,5 @@ ax.set_xlim(1,9)
 ax.set_ylim(1,9)
 plt.grid(ls='--')
 plt.tight_layout()
-
-plt.savefig(f'BWS.41677.V_IN_vs_OUT_fixed.png', bbox_inches='tight')
+plt.show()
+#plt.savefig(f'BWS.41677.V_IN_vs_OUT_fixed.png', bbox_inches='tight')

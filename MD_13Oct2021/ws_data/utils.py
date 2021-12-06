@@ -27,7 +27,7 @@ def fitGauss(pos, prof, pos_min=-np.inf, pos_max=np.inf, fit_func='Gauss4p'):
             if fit_func == 'Gauss4p': # added by Natalia, 14.10.2021
                 errors = np.sqrt(np.array([pcov[0,0], pcov[1,1], pcov[2,2], pcov[3,3]])) 
             if fit_func == 'Gauss5p': # added from Natalia, 14.10.2021
-                errors = np.sqrt(np.array([pcov[0,0], pcov[1,1], pcov[2,2], pcov[3,3], pcov[4,4]])) # Get the standard deviation of the parameters, square roors of the diagonal of the covariance
+                errors = np.sqrt(np.array([pcov[0,0], pcov[1,1], pcov[2,2], pcov[3,3], pcov[4,4]])) # Get the standard deviation of the parameters, square roots of the diagonal of the covariance
             if len(popt) == 4:
                 popt = np.append(popt, [skew0])
         except (RuntimeError, ValueError):

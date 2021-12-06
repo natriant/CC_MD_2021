@@ -90,21 +90,21 @@ for my_set in range(1,3):
     x_dict[f'Set{my_set}_myFitresults'] = []
     
     for i in range(len(y_dict[f'positions_Set{my_set}'])): # iterate over the acquisitions for each setting, y-plane
-        pop_t_y, errors = fitGauss(y_dict[f'positions_Set{my_set}'][i], y_dict[f'profiles_Set{my_set}'][i], fit_func='Gauss5p')
+        pop_t_y, errors = fitGauss(y_dict[f'positions_Set{my_set}'][i], y_dict[f'profiles_Set{my_set}'][i], fit_func='Gauss4p')
         A, mu, sigma, offset = pop_t_y[0], pop_t_y[1], pop_t_y[2], pop_t_y[3]
         ey = getEmittance(sigma, beta['SPS.BWS.41677.V'], y_dict[f'betagamma_Set{my_set}'][i]) # returns the emittance in [um]
-        err= errors[-1]/sigma # from MD 2018. cernbox/CC_MDs_2018/27July2020/MD5_5Sep2018_beam_profiles_vs_emitBU_coast2.ipynb. Added by Natalia 14.10.2021
+        err= 2*ey*errors[-2]/sigma # from MD 2018. cernbox/CC_MDs_2018/27July2020/MD5_5Sep2018_beam_profiles_vs_emitBU_coast2.ipynb. Added by Natalia 14.10.2021
         
         y_dict[f'emittance_Set{my_set}_myFit'].append([ey[0], err])
         results = [A, mu, sigma, offset]
         y_dict[f'Set{my_set}_myFitresults'].append(results)
 
     for i in range(len(x_dict[f'positions_Set{my_set}'])): # iterate over the acquisitions for each setting, x-plane
-        pop_t_x, errors = fitGauss(x_dict[f'positions_Set{my_set}'][i], x_dict[f'profiles_Set{my_set}'][i], fit_func='Gauss5p')
+        pop_t_x, errors = fitGauss(x_dict[f'positions_Set{my_set}'][i], x_dict[f'profiles_Set{my_set}'][i], fit_func='Gauss4p')
         A, mu, sigma, offset = pop_t_x[0], pop_t_x[1], pop_t_x[2], pop_t_x[3]
         ex = getEmittance(sigma, beta['SPS.BWS.51637.H'], x_dict[f'betagamma_Set{my_set}'][i])
         ex_Dx = getEmittance_with_Dx(pop_t_x[2],  beta['SPS.BWS.51637.H'], x_dict['betagamma_Set1'][0], Dx['SPS.BWS.51637.H'], dpp) # returns the emittance in [um]
-        err= errors[-1]/sigma
+        err= 2*ey*errors[-2]/sigma
         
         x_dict[f'emittance_Set{my_set}_myFit'].append([ex[0], err])
         x_dict[f'emittance_Set{my_set}_myFit_with_Dx'].append([ex_Dx[0], err])
